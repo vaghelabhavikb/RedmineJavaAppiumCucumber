@@ -1,12 +1,17 @@
 package config;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class EnvVars {
 
-	public static String tdPath =
-	    System.getProperty("user.dir") + "\\src\\test\\resources\\TestData\\JsonData\\";
-	public static String resultPath = System.getProperty("user.dir") + "\\Result\\";
+	public static Path tdPath = Paths.get("src/test/resources/Testdata/JsonData");
+//	    System.getProperty("user.dir") + "\\src\\test\\resources\\TestData\\JsonData\\";
+	
+	public static Path resultPath = Paths.get("Result"); 
+//			System.getProperty("user.dir") + "\\Result\\";
 
-	public static String prodCatalogTD = tdPath + "ProductCatalog\\";
+//	public static String prodCatalogTD = tdPath + "ProductCatalog\\";
 
 	public static final String excelExt = ".xlsx";
 	public static final String propExt = ".properties";
