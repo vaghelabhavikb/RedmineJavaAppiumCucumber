@@ -4,6 +4,8 @@ import static config.EnvVars.tdPath;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,7 +22,6 @@ import net.minidev.json.JSONObject;
 
 public class TestDataUtilities {
 
-	String jsonFile;
 	DocumentContext docReader;
 	Object document;
 
@@ -29,9 +30,8 @@ public class TestDataUtilities {
 
 	public TestDataUtilities(String fileName) {
 
-		jsonFile = tdPath + fileName;
 		try {
-			docReader = JsonPath.parse(new File(jsonFile + ".json"));
+			docReader = JsonPath.parse(tdPath.resolve(Paths.get(fileName + ".json")).toAbsolutePath().toFile());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

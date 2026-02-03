@@ -2,6 +2,7 @@ package tests;
 
 import java.util.Map;
 
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -24,6 +25,7 @@ public class TProjects extends BaseClass {
 	@When("User open create project view")
 	public void userOpenCreateProjectView() {
 		projectsView.launchCreateProjectView();
+		scenario.log("SAMPLE TEXT");
 	}
 
 	@And("Provides {string} to create a project")
