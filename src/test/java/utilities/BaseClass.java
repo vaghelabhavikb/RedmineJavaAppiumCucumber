@@ -46,6 +46,7 @@ public class BaseClass {
 		op.setAppWaitActivity("com.ideil.redmine.*");
 				
 		try {
+//			appium --relaxed-security is required at the appium startup.
 			driver = new AndroidDriver(new URI("http://0.0.0.0:4723").toURL(), op);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

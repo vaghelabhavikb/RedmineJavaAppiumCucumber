@@ -22,7 +22,7 @@ public class SetupTearDown extends BaseClass{
 			cmd.takeScreenShot(arr[arr.length - 1].replace(":", ""));
 			cmd.attachScreenShot(s);
 		}
-		driver.quit();
+//		driver.quit();
 	}
 	
 	
