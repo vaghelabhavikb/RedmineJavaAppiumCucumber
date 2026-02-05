@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -68,6 +69,13 @@ public class WebDriverUtility extends BaseClass {
 		Actions ac = new Actions(driver);
 		ac.pause(Duration.ofSeconds(2)).sendKeys(Keys.ARROW_RIGHT).sendKeys(Keys.ARROW_RIGHT).build()
 		    .perform();
+	}
+	
+	public void performAndroidSearchAction() {
+		((JavascriptExecutor)(driver)).executeScript("mobile: performEditorAction", Map.of("action", 3));
+//		3 = IME_ACTION_SEARCH
+//		2 = IME_ACTION_GO
+//		6 = IME_ACTION_DONE
 	}
 
 	public WebElement findElement(By by) {
@@ -218,6 +226,10 @@ public class WebDriverUtility extends BaseClass {
 
 	public Select getSelectElement(By by) {
 		return new Select(ww.until(ExpectedConditions.presenceOfElementLocated(by)));
+	}
+	
+	public void selectByValue(By by, String value) {
+		getSelectElement(by).selectByContainsVisibleText(value);
 	}
 
 	public boolean checkElementIsEnabled(By by) {

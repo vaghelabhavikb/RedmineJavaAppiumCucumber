@@ -2,20 +2,23 @@ package tests;
 
 import java.util.Map;
 
-import io.cucumber.java.Scenario;
+import org.junit.Assert;
+
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import pom.CreateProjView;
 import pom.LaunchView;
+import pom.ProjectSearchView;
 import pom.ProjectsView;
 import utilities.BaseClass;
-import utilities.TestDataUtilities;
 
 public class TProjects extends BaseClass {
 
 	LaunchView launchView = new LaunchView();
 	ProjectsView projectsView = new ProjectsView();
-	TestDataUtilities jsonData = new TestDataUtilities("CreateProjects");
+	CreateProjView createProjView = new CreateProjView();
+	ProjectSearchView projectSearchView = new ProjectSearchView();
 
 	@And("User go to Projects view")
 	public void userGoToProjectsView() {
@@ -25,23 +28,22 @@ public class TProjects extends BaseClass {
 	@When("User open create project view")
 	public void userOpenCreateProjectView() {
 		projectsView.launchCreateProjectView();
-		scenario.log("SAMPLE TEXT");
 	}
 
 	@And("Provides {string} to create a project")
 	public void providesProjectNameToCreateAProject(String name) {
-		projectsView.createProject(name);
+		createProjView.createProject(name);
 	}
 
 	@When("Provides project details to create a project")
-	public void providesProjectDetailsToCreateAProject() {
-		for (Map<String, String> project : jsonData.getJsonObjAsListMap("$.Projects")) {
-			projectsView.createProject(project);
-		}
+	public void providesProjectDetailsToCreateAProject(Map<String,String> map) {
+		createProjView.createProject(map);
 	}
 
-	@Then("Project should be created with the provided details")
-	public void projectShouldBeCreatedWithTheProvidedDetails() {
-
+	@Then("Project named {string} should be created")
+	public void projectShouldBeCreatedWithTheProvidedDetails(String name) {
+		projectsView.launchProjectSearchView();
+		projectSearchView.searchForTheProject(name);
+		Assert.assertTrue("Project not created", projectSearchView.isProjectPresent(name));
 	}
 }
