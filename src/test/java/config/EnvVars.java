@@ -6,12 +6,8 @@ import java.nio.file.Paths;
 public class EnvVars {
 
 	public static Path tdPath = Paths.get("src/test/resources/Testdata/JsonData");
-//	    System.getProperty("user.dir") + "\\src\\test\\resources\\TestData\\JsonData\\";
-	
-	public static Path resultPath = Paths.get("Result"); 
-//			System.getProperty("user.dir") + "\\Result\\";
 
-//	public static String prodCatalogTD = tdPath + "ProductCatalog\\";
+	public static Path resultPath = Paths.get("Result");
 
 	public static final String excelExt = ".xlsx";
 	public static final String propExt = ".properties";
@@ -29,4 +25,6 @@ public class EnvVars {
 	public static final int shortww = 5;
 	public static final int normalww = 30;
 
+//Formats
+	public static final String dateFormat = "dd MMMM yyyy";
 }
