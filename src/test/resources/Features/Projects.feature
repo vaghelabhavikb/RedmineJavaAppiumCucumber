@@ -14,7 +14,6 @@ The workflows cover here projects creation and maintenance
       | "Assets"       |
       | "Fuel Records" |
 
-  @IP
   Scenario: Verify user can create project with optional fields
     When User open create project view
     And Provides project details to create a project
@@ -25,7 +24,6 @@ The workflows cover here projects creation and maintenance
       | Tracker        | Story           |
     Then Project named "Vendors" should be created
 
-  @IP
   Scenario: Verify user can create project with optional fields
     When User open create project view
     And Provides project details to create a project
@@ -34,3 +32,32 @@ The workflows cover here projects creation and maintenance
       | Identifier     | acc              |
       | Sub Project Of | DocID1           |
     Then Project named "Accounts" should be created
+
+  Scenario: Verify that user can create tasks within a project
+    Given user open "DocID" project
+    When user opens create tasks form
+    And enters task fields values and creates this task
+      | Name               | Ability to insert TOC in the last page                                                                                            |
+      | Description        | This feature will provide ability to insert TOC in the last page of the document. User can also add/remove/edit the inserted TOC |
+      | AssignedTo         | Bhavik Vaghela                                                                                                                    |
+      | Category           | Customer Bug                                                                                                                      |
+      | CompletePercentage | 2                                                                                                                                 |
+      | Status             | Open                                                                                                                              |
+      | ExpenditureTime    | 3                                                                                                                                 |
+      | StartDate          | In 7 days                                                                                                                        |
+    And navigates to the created task details view
+    Then the task info should display correct fields values
+
+ @IP
+  Scenario: Verify that user can create tasks within a project
+    Given user open "DocID" project
+    When user opens create tasks form
+    And enters task fields values and creates this task
+      | Name            | Ability to insert TOC in the first page                                                                                            |
+      | Description     | This feature will provide ability to insert TOC in the first page of the document. User can also add/remove/edit the inserted TOC |
+      | Category        | Story                                                                                                                              |
+      | Status          | Open                                                                                                                             |
+      | ExpenditureTime | 5                                                                                                                                  |
+      | StartDate       | In 6 days                                                                                                                         |
+    And navigates to the created task details view
+    Then the task info should display correct fields values

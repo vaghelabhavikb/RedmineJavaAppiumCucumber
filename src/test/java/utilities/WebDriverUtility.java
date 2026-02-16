@@ -20,6 +20,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -67,12 +68,11 @@ public class WebDriverUtility extends BaseClass {
 	public void sliderValueIncrease(By by) {
 		ww.until(ExpectedConditions.elementToBeClickable(by)).click();
 		Actions ac = new Actions(driver);
-		ac.pause(Duration.ofSeconds(2)).sendKeys(Keys.ARROW_RIGHT).sendKeys(Keys.ARROW_RIGHT).build()
-		    .perform();
+		ac.pause(Duration.ofSeconds(2)).sendKeys(Keys.ARROW_RIGHT).sendKeys(Keys.ARROW_RIGHT).build().perform();
 	}
-	
+
 	public void performAndroidSearchAction() {
-		((JavascriptExecutor)(driver)).executeScript("mobile: performEditorAction", Map.of("action", 3));
+		((JavascriptExecutor) (driver)).executeScript("mobile: performEditorAction", Map.of("action", 3));
 //		3 = IME_ACTION_SEARCH
 //		2 = IME_ACTION_GO
 //		6 = IME_ACTION_DONE
@@ -80,6 +80,15 @@ public class WebDriverUtility extends BaseClass {
 
 	public WebElement findElement(By by) {
 		return ww.until(ExpectedConditions.visibilityOfElementLocated(by));
+	}
+
+	public boolean isElementDisplayedWithoutWait(By by) {
+		try {
+			driver.findElement(by).isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 	public boolean isElementVisible(By by) {
@@ -208,6 +217,19 @@ public class WebDriverUtility extends BaseClass {
 		return ww.until(ExpectedConditions.presenceOfElementLocated(by)).getText().trim();
 	}
 
+	public String getTextWithStaleCheck(By by, int attemptCount) {
+		while (attemptCount > 0) {
+			try {
+				wait(1);
+				ww.until(ExpectedConditions.presenceOfElementLocated(by));
+				break;
+			} catch (StaleElementReferenceException e) {
+				attemptCount--;
+			}
+		}
+		return ww.until(ExpectedConditions.presenceOfElementLocated(by)).getText().trim();
+	}
+
 	public String getAttribute(By by, String att) {
 		return ww.until(ExpectedConditions.presenceOfElementLocated(by)).getAttribute(att).trim();
 	}
@@ -227,7 +249,7 @@ public class WebDriverUtility extends BaseClass {
 	public Select getSelectElement(By by) {
 		return new Select(ww.until(ExpectedConditions.presenceOfElementLocated(by)));
 	}
-	
+
 	public void selectByValue(By by, String value) {
 		getSelectElement(by).selectByContainsVisibleText(value);
 	}
@@ -259,7 +281,7 @@ public class WebDriverUtility extends BaseClass {
 		File f = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		try {
 			FileUtils.copyFile(f,
-			    new File(resultPath + fileName + Instant.now().toString().replace(":", "-") + ".png"));
+					new File(resultPath + fileName + Instant.now().toString().replace(":", "-") + ".png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -292,23 +314,23 @@ public class WebDriverUtility extends BaseClass {
 	public void longClickGesture(By by) {
 		WebElement we = ww.until(ExpectedConditions.elementToBeClickable(by));
 		((JavascriptExecutor) driver).executeScript("mobile: longClickGesture",
-		    ImmutableMap.of("elementId", ((RemoteWebElement) we).getId(), "duration", 1000));
+				ImmutableMap.of("elementId", ((RemoteWebElement) we).getId(), "duration", 1000));
 	}
 
 	public void longClickGesture(WebElement ele) {
 		((JavascriptExecutor) driver).executeScript("mobile: longClickGesture",
-		    ImmutableMap.of("elementId", ((RemoteWebElement) ele).getId(), "duration", 1000));
+				ImmutableMap.of("elementId", ((RemoteWebElement) ele).getId(), "duration", 1000));
 	}
 
 	public void clickGesture(By by) {
 		WebElement we = ww.until(ExpectedConditions.elementToBeClickable(by));
 		((JavascriptExecutor) driver).executeScript("mobile: clickGesture",
-		    ImmutableMap.of("elementId", ((RemoteWebElement) we).getId()));
+				ImmutableMap.of("elementId", ((RemoteWebElement) we).getId()));
 	}
 
 	public void clickGesture(WebElement ele) {
 		((JavascriptExecutor) driver).executeScript("mobile: clickGesture",
-		    ImmutableMap.of("elementId", ((RemoteWebElement) ele).getId()));
+				ImmutableMap.of("elementId", ((RemoteWebElement) ele).getId()));
 	}
 
 	public void checkNScrollIfElementIsObscured(By operationBy, By obscuringBy) {
@@ -324,7 +346,7 @@ public class WebDriverUtility extends BaseClass {
 		int obscHeight = obsc.getHeight();
 
 		if ((obscY <= opeY && opeY <= (obscY + obscHeight))
-		    || (obscY <= (opeY + opeHeight) && (opeY + opeHeight) <= (obscY + obscHeight))) {
+				|| (obscY <= (opeY + opeHeight) && (opeY + opeHeight) <= (obscY + obscHeight))) {
 			Dimension dim = driver.manage().window().getSize();
 			int windowWidth = dim.getWidth();
 			int windowHeight = dim.getHeight();
@@ -334,8 +356,8 @@ public class WebDriverUtility extends BaseClass {
 			int endY = windowHeight / 4;
 
 			new AndroidTouchAction((PerformsTouchActions) driver).press(PointOption.point(startX, startY))
-			    .waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1)))
-			    .moveTo(PointOption.point(endX, endY)).release().perform();
+					.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(1))).moveTo(PointOption.point(endX, endY))
+					.release().perform();
 		}
 	}
 
@@ -362,10 +384,10 @@ public class WebDriverUtility extends BaseClass {
 				PointerInput input = new PointerInput(Kind.TOUCH, "first-finger");
 				Sequence seq = new Sequence(input, 0);
 				seq.addAction(input.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), startX,
-				    (int) (startY + (endY * .1))));
+						(int) (startY + (endY * .1))));
 				seq.addAction(input.createPointerDown(PointerInput.MouseButton.MIDDLE.asArg()));
-				seq.addAction(input.createPointerMove(Duration.ofSeconds(2), PointerInput.Origin.viewport(),
-				    startX, (int) (startY + endY - (endY * .1))));
+				seq.addAction(input.createPointerMove(Duration.ofSeconds(2), PointerInput.Origin.viewport(), startX,
+						(int) (startY + endY - (endY * .1))));
 				seq.addAction(input.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg()));
 				((AppiumDriver) driver).perform(Collections.singletonList(seq));
 
@@ -396,8 +418,8 @@ public class WebDriverUtility extends BaseClass {
 				}
 			} catch (Exception e) {
 				((JavascriptExecutor) driver).executeScript("mobile: scrollGesture",
-				    ImmutableMap.of("left", 0, "top", 0, "width", rec.getWidth(), "height", rec.getHeight() / 2,
-				        "direction", "down", "percent", 1.0));
+						ImmutableMap.of("left", 0, "top", 0, "width", rec.getWidth(), "height", rec.getHeight() / 2,
+								"direction", "down", "percent", 1.0));
 				maxScrollCount--;
 			}
 		}
@@ -420,8 +442,8 @@ public class WebDriverUtility extends BaseClass {
 				}
 			} catch (Exception e) {
 				((JavascriptExecutor) driver).executeScript("mobile: scrollGesture",
-				    ImmutableMap.of("left", rec.getX(), "top", rec.getY(), "width", rec.getWidth(), "height",
-				        rec.getHeight() * .9, "direction", "down", "percent", 1.0, "speed", 720));
+						ImmutableMap.of("left", rec.getX(), "top", rec.getY(), "width", rec.getWidth(), "height",
+								rec.getHeight() * .9, "direction", "down", "percent", 1.0, "speed", 720));
 				maxScrollCount--;
 			}
 		}
@@ -441,7 +463,7 @@ public class WebDriverUtility extends BaseClass {
 				}
 			} catch (Exception e) {
 				((JavascriptExecutor) driver).executeScript("mobile: swipeGesture", ImmutableMap.of("elementId",
-				    ((RemoteWebElement) we).getId(), "direction", "left", "percent", 1));
+						((RemoteWebElement) we).getId(), "direction", "left", "percent", 1));
 				maxSwipeCount--;
 			}
 		}
@@ -455,7 +477,7 @@ public class WebDriverUtility extends BaseClass {
 		while (swipeCount > 0) {
 			wait(2);
 			((JavascriptExecutor) driver).executeScript("mobile: swipeGesture", ImmutableMap.of("elementId",
-			    ((RemoteWebElement) we).getId(), "direction", dir, "percent", 1, "speed", 720));
+					((RemoteWebElement) we).getId(), "direction", dir, "percent", 1, "speed", 720));
 			swipeCount--;
 		}
 	}
@@ -470,18 +492,16 @@ public class WebDriverUtility extends BaseClass {
 		PointerInput input = new PointerInput(Kind.TOUCH, "first-finger");
 		Sequence seq = new Sequence(input, 0);
 		seq.addAction(input.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), startX,
-		    (int) (startY + endY - (endY * .1))));
+				(int) (startY + endY - (endY * .1))));
 		seq.addAction(input.createPointerDown(PointerInput.MouseButton.MIDDLE.asArg()));
-		seq.addAction(
-		    input.createPointerMove(Duration.ofSeconds(3), PointerInput.Origin.viewport(), startX, startY));
+		seq.addAction(input.createPointerMove(Duration.ofSeconds(3), PointerInput.Origin.viewport(), startX, startY));
 		seq.addAction(input.createPointerUp(PointerInput.MouseButton.MIDDLE.asArg()));
 
 		((AppiumDriver) driver).perform(Collections.singletonList(seq));
 
 	}
 
-	public ArrayList<String> getTextOfEachEleInScrollView(By scrollBounArea, By getBys,
-	    int maxScrollCount) {
+	public ArrayList<String> getTextOfEachEleInScrollView(By scrollBounArea, By getBys, int maxScrollCount) {
 		ArrayList<String> eleTexts = new ArrayList<String>();
 
 //		WebElement scrollBoundEle = findElement(scrollBounArea);

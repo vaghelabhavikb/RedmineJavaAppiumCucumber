@@ -15,7 +15,9 @@ public class ProjectsView extends BaseClass {
 
 	By addProjectIcon = By.id("com.ideil.redmine:id/action_add");
 	By searchIcon = AppiumBy.accessibilityId("Search");
+	By docIDProjLabel = AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"com.ideil.redmine:id/title\").text(\"DocID\")");
 
+	
 	private By getByOfCreatedProj(String name) {
 		return AppiumBy.androidUIAutomator(
 				"new UiSelector().text(\"" + name + "\"). resourceId(\"com.ideil.redmine:id/title\")");
@@ -29,4 +31,8 @@ public class ProjectsView extends BaseClass {
 		cmd.click(searchIcon);
 	}
 
+	public void navToDocIDProj() {
+		cmd.click(docIDProjLabel);
+	}
+	
 }
